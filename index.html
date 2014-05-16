@@ -1,0 +1,146 @@
+<html>
+<head>
+    <title>Pointer Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        html { 
+            -ms-touch-action: none;
+            background: black;
+            color: white;
+        }
+        #content {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        #debug-log {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        .pointerover {
+            color: white;
+        }
+        .pointerdown {
+            color: white;
+        }
+        .pointermove {
+            color: gray;
+        }
+        .pointerup {
+            color: white;
+        }
+        .pointerout {
+            color: white;
+        }
+        .pointercancel {
+            color: red;
+        }
+        .lostpointercapture {
+            color: pink;
+        }
+    </style>
+</head>
+
+	<div id="description">This page tests if the caret pointer can be actuated and placed on a contentEditable 'input type=text' element, mobile page.</div><br/>
+	<input id="TestControl" class="editableElement" contentEditable="true" type="text" value="get  TestingTestingTesting  get" />
+	<br /><br />
+
+    <ul id="debug-log"></ul>
+    <canvas id="content"></canvas>
+
+    <script>
+        var debug_log = document.getElementById("debug-log");
+        
+        function logPointer(type, evt) {
+            var debug_string = type + " " + 
+                "[id: " + evt.pointerId + "] " +
+                "[x: " + evt.clientX + "] " +
+                "[y: " + evt.clientY + "] " + 
+                "[w: " + evt.width + "] " + 
+                "[h: " + evt.height + "] " + 
+                "[tiltx: " + evt.tiltX + "] " + 
+                "[tilty: " + evt.tiltY + "] " +
+                "[isprimary: " + evt.isPrimary + "] ";
+            
+            var li = document.createElement("li");
+            li.classList.add(type);
+            li.innerHTML = debug_string;
+            debug_log.insertBefore(li, debug_log.firstChild);
+            
+            console.log(debug_string);
+        }
+        
+        var canvas = document.getElementById("content");
+        var context = canvas.getContext("2d");
+        
+        context.canvas.width  = window.innerWidth;
+        context.canvas.height = window.innerHeight;
+        
+        function drawPointer(evt) {
+            if (evt.isPrimary) {
+                context.fillStyle="rgba(0,255,0,0.25)";
+            }
+            else {
+                context.fillStyle="rgba(255,0,0,0.25)";
+            }
+            
+            var width = evt.width;
+            var height = evt.width;
+            
+            /*
+            if (width == 0 || height == 0) {
+                width = 20;
+                height = 20;
+            }
+            */
+            
+            context.fillRect(
+                evt.clientX - width / 2,
+                evt.clientY - width / 2,
+                width,
+                height);
+        }
+        
+        if (window.navigator.pointerEnabled) {
+            canvas.addEventListener("pointerover", function(evt) {
+                logPointer("pointerover", evt);
+                drawPointer(evt);
+            }, true);
+            
+            canvas.addEventListener("pointerdown", function(evt) {
+                logPointer("pointerdown", evt);
+                drawPointer(evt);
+            }, true);
+            
+            canvas.addEventListener("pointermove", function(evt) {
+                logPointer("pointermove", evt);
+                drawPointer(evt);
+            }, true);
+            
+            canvas.addEventListener("pointerup", function(evt) {
+                logPointer("pointerup", evt);
+                drawPointer(evt);
+            }, true);
+            
+            canvas.addEventListener("pointerout", function(evt) {
+                logPointer("pointerout", evt);
+                drawPointer(evt);
+            }, true);
+            
+            canvas.addEventListener("pointercancel", function(evt) {
+                logPointer("pointercancel", evt);
+                drawPointer(evt);
+            }, true);
+            
+            canvas.addEventListener("lostpointercapture", function(evt) {
+                logPointer("lostpointercapture", evt);
+                drawPointer(evt);
+            }, true);
+        }
+    </script>
+
+</html>
